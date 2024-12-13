@@ -41,10 +41,14 @@ public class BookService {
 	
 	private Book updateBook(Book existingBook, Book book) {
 		var updatedBook = new Book(
+				existingBook.id(),
+				existingBook.version(),
 				existingBook.isbn(),
 				book.title(),
 				book.author(),
-				book.price());
+				book.price(),
+				existingBook.createDate(),
+				existingBook.lastModifiedDate());
 		return bookRepository.save(updatedBook);
 		
 	}

@@ -2,6 +2,28 @@ spring:
  application:
   name: catalog-service
   
+ config:
+  import: "optional:configserver:"
+ cloud:
+  config:
+   uri: http://localhost:8888
+   request-connect-timeout: 5000 # 5s
+   request-read-timeout: 5000    # 5s
+   fail-fast: false  # In prod set to true
+   retry:
+    max-attemts: 6
+    initial-interval: 1000 # 1s
+    max-interval: 2000     #2s
+    multiplier: 1.1
+    
+ datasource:
+  url: jdbc:postgresql://localhost:5432/polardb_catalog
+  username: user
+  password: password
+  hikari:
+   connection-timeout: 2000  #2s
+   maximum-pool-size: 5
+  
 server:
  port: 9001
  tomcat:
@@ -9,5 +31,14 @@ server:
   keep-alive-timeout: 15s
   threads:
    max: 50 
-   min-spare: 10
+   min-spare: 10 
+ 
+polar:
+ greeting:  Welcome to the local book catalog!
+ 
+management:
+ endpoints:
+  web:
+   exposure:
+    include: refresh
 
