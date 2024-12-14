@@ -52,10 +52,23 @@ dependencyManagement {
   }
 }
 
-bootRun {
+tasks.named('bootRun') {
 	systemProperty 'spring.profiles.active', 'testdata'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.named("bootBuildImage") {
+	imageName.set("ghcr.io/nagarjuna-guntu/${project.name}")
+	environment["BP_JVM_VERSION"] = "23"
+	publish = true
+	docker {
+		publishRegistry {			
+			username = "nagarjuna-guntu"
+			password = project.findProperty("registryToken")
+		}
+	
+	}
 }
