@@ -39,6 +39,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-database-postgresql'
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation 'org.testcontainers:junit-jupiter'
@@ -56,19 +57,19 @@ tasks.named('bootRun') {
 	systemProperty 'spring.profiles.active', 'testdata'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
 tasks.named("bootBuildImage") {
-	imageName.set("ghcr.io/nagarjuna-guntu/${project.name}")
-	environment["BP_JVM_VERSION"] = "23"
-	publish = true
+	imageName = "${project.name}"
+	environment["BP_JVM_VERSION"] = "23.*"
+	/*publish = true
 	docker {
 		publishRegistry {			
 			username = "nagarjuna-guntu"
 			password = project.findProperty("registryToken")
 		}
 	
-	}
+	}*/
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
 }
