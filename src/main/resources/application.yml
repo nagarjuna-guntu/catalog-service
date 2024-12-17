@@ -1,6 +1,8 @@
 spring:
  application:
   name: catalog-service
+ lifecycle:
+  timeout-per-shudown-phase: 15s  # grace period for shutdown, by dafault 30s for Spring Apps, as well as k8s also have the same grace period.
   
  config:
   import: "optional:configserver:"
@@ -26,6 +28,7 @@ spring:
   
 server:
  port: 9001
+ shutdown: graceful #by default from Spring Boot 3.4
  tomcat:
   connection-timeout: 2s
   keep-alive-timeout: 15s
