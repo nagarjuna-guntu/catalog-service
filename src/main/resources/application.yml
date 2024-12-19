@@ -1,47 +1,54 @@
 spring:
- application:
-  name: catalog-service
- lifecycle:
-  timeout-per-shudown-phase: 15s  # grace period for shutdown, by dafault 30s for Spring Apps, as well as k8s also have the same grace period.
+  application:
+    name: catalog-service
+  lifecycle:
+    timeout-per-shudown-phase: 15s  # grace period for shutdown, by dafault 30s for Spring Apps, as well as k8s also have the same grace period.
   
- config:
-  import: "optional:configserver:"
- cloud:
   config:
-   uri: http://localhost:8888
-   request-connect-timeout: 5000 # 5s
-   request-read-timeout: 5000    # 5s
-   fail-fast: false  # In prod set to true
-   retry:
-    max-attemts: 6
-    initial-interval: 1000 # 1s
-    max-interval: 2000     #2s
-    multiplier: 1.1
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+      request-connect-timeout: 5000 # 5s
+      request-read-timeout: 5000    # 5s
+      fail-fast: false  # In prod set to true
+      retry:
+        max-attemts: 6
+        initial-interval: 1000 # 1s
+        max-interval: 2000     #2s
+        multiplier: 1.1
     
- datasource:
-  url: jdbc:postgresql://localhost:5432/polardb_catalog
-  username: user
-  password: password
-  hikari:
-   connection-timeout: 2000  #2s
-   maximum-pool-size: 5
+  datasource:
+    url: jdbc:postgresql://localhost:5432/polardb_catalog
+    username: user
+    password: password
+    hikari:
+      connection-timeout: 2000  #2s
+      maximum-pool-size: 5
   
 server:
- port: 9001
- shutdown: graceful #by default from Spring Boot 3.4
- tomcat:
-  connection-timeout: 2s
-  keep-alive-timeout: 15s
-  threads:
-   max: 50 
-   min-spare: 10 
+  port: 9001
+  shutdown: graceful #by default from Spring Boot 3.4
+  tomcat:
+    connection-timeout: 2s
+    keep-alive-timeout: 15s
+    threads:
+      max: 50 
+      min-spare: 10 
  
 polar:
- greeting:  Welcome to the local book catalog!
+  greeting:  Welcome to the local book catalog!
  
 management:
- endpoints:
-  web:
-   exposure:
-    include: refresh
+  endpoints:
+    web:
+      exposure:
+        include: refresh
 
+
+
+  docker:
+    compose:
+      enabled: false
+      file: "../docker-compose.yml"
+      

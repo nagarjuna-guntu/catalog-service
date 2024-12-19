@@ -25,7 +25,7 @@ class BookRepositoryTest {
 	
 	@Container
 	@ServiceConnection
-	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14.15-alpine3.21");
+	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.1");
 
 	@Autowired
 	private BookRepository bookRepository;
