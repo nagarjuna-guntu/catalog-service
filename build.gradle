@@ -1,7 +1,7 @@
-plugins {
+ plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.0'
-	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.polarbookshop'
@@ -25,6 +25,8 @@ repositories {
 
 ext {
   set('springCloudVersion', "2024.0.0")
+  set('testKeycloakVersion', "3.4.0")
+  set('otelVersion', "2.11.0")
 }
 
 dependencies {
@@ -34,7 +36,14 @@ dependencies {
 	implementation 'org.springframework.retry:spring-retry'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter'
+	implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+	
+	
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -44,10 +53,15 @@ dependencies {
 	runtimeOnly 'org.flywaydb:flyway-core'
 	runtimeOnly 'org.flywaydb:flyway-database-postgresql'
 	
+	
+	
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation 'org.testcontainers:junit-jupiter'
   	testImplementation 'org.testcontainers:postgresql'
+  	testImplementation "com.github.dasniko:testcontainers-keycloak:${testKeycloakVersion}"
   	
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -55,6 +69,7 @@ dependencies {
 dependencyManagement {
   imports {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    mavenBom "io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:${otelVersion}"
   }
 }
 
@@ -65,7 +80,7 @@ tasks.named('bootRun') {
 tasks.named("bootBuildImage") {
 	imageName = "${project.name}"
 	environment["BP_JVM_VERSION"] = "23.*"
-	publish = true
+	/*publish = true
 	docker {
 		publishRegistry {			
 			username = project.findProperty("registryUsername")
@@ -73,7 +88,11 @@ tasks.named("bootBuildImage") {
 			url = project.findProperty("registryUrl")
 		}
 	
-	}
+	}*/
+}
+
+springBoot {
+	buildInfo()
 }
 
 tasks.named('test') {

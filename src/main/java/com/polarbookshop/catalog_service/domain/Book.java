@@ -2,8 +2,10 @@ package com.polarbookshop.catalog_service.domain;
 
 import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 
@@ -42,10 +44,19 @@ public record Book(
 		Instant createDate,
 		
 		@LastModifiedDate
-		Instant lastModifiedDate) {
+		Instant lastModifiedDate,
+
+		@CreatedBy
+		String createdBy,
+		
+		@LastModifiedBy
+		String lastModifiedBy)
+
+
+{
 	
 	    public static Book of(String isbn, String title, String author, double price, String publisher) {
-	    	return new Book (null, 0, isbn, title, author, price, publisher, null, null);
+	    	return new Book (null, 0, isbn, title, author, price, publisher, null, null, null, null);
 	    }
 
 }
