@@ -20,9 +20,10 @@ spring:
   lifecycle:
     timeout-per-shudown-phase: 15s  # grace period for shutdown, by dafault 30s for Spring Apps, as well as k8s also have the same grace period.
   config:
-    import: "optional:configserver:"
+    import: "" # When using Config Service, add "optional:configserver:" for ex, in docker environment
   cloud:
     config:
+      enabled: false  # When using Config Service, set to true
       uri: http://localhost:8888
       request-connect-timeout: 5000 # 5s
       request-read-timeout: 5000    # 5s
@@ -55,7 +56,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, metrics, flyway, info, heapdump
+        include: refresh, health, flyway, info, heapdump, prometheus
   endpoint:
     health:
       show-details: always
@@ -79,5 +80,5 @@ management:
 #%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){yellow}
 logging:
   pattern:
-    correlation: "%clr([${spring.application.name:},%X{traceId:-},%X{spanId:-}]){blue} "
+    correlation: "%clr([${spring.application.name:},%X{traceId:-},%X{spanId:-}]){yellow} "
   include-application-name: false      
