@@ -56,7 +56,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, flyway, info, heapdump, prometheus
+        include: refresh, health, flyway, info, heapdump, metrics, env, loggers, mappings, configprops
   endpoint:
     health:
       show-details: always
