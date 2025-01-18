@@ -1,2 +1,2 @@
 # catalog-service
-Spring Boot Demo Project for Catalog service
+Spring Boot demo Project for books Catalog service
