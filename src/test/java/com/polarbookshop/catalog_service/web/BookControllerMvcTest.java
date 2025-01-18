@@ -23,7 +23,6 @@ import com.polarbookshop.catalog_service.domain.BookService;
 
 @WebMvcTest(BookController.class)
 @Import(SecurityConfig.class)
-@Disabled
 class BookControllerMvcTest {
 	
 	@Autowired
@@ -41,7 +40,6 @@ class BookControllerMvcTest {
 	}
 	
 	@Test
-	@Disabled
 	void getBook_Exists_Should_Return_200_When_Authenticated() {
 		var isbn = "7373731394";
         var expectedBook = Book.of(isbn, "Title", "Author", 9.90, "Polarsophia");
