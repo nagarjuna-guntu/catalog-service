@@ -2,11 +2,11 @@ server:
   port: 9001
   shutdown: graceful #by default from Spring Boot 3.4
   tomcat:
-    connection-timeout: 2s
-    keep-alive-timeout: 15s
+    connection-timeout: 2s  #wait time between a TCP connection and recieving a request from client, The default value is 20s
+    keep-alive-timeout: 15s #how long to keep a connection open while waiting for new HTTP requests.
     threads:
-      max: 50 
-      min-spare: 10 
+      max: 50 #max number of request processing threads, The default value is 200 (in production case 200 threads are good number).
+      min-spare: 10 #min number of request processing threads.
 
 info: 
   system: Polar Bookshop
@@ -19,66 +19,79 @@ spring:
     name: catalog-service
   lifecycle:
     timeout-per-shudown-phase: 15s  # grace period for shutdown, by dafault 30s for Spring Apps, as well as k8s also have the same grace period.
-  config:
-    import: "" # When using Config Service, add "optional:configserver:" for ex, in docker environment
-  cloud:
-    config:
-      enabled: false  # When using Config Service, set to true
-      uri: http://localhost:8888
-      request-connect-timeout: 5000 # 5s
-      request-read-timeout: 5000    # 5s
-      fail-fast: false  # In prod set to true
-      retry:
-        max-attemts: 6
-        initial-interval: 1000 # 1s
-        max-interval: 2000     #2s
-        multiplier: 1.1   
-  datasource:
-    url: jdbc:postgresql://localhost:5432/polardb_catalog
-    username: user
-    password: password
-    hikari:
-      connection-timeout: 2000  #2s
-      maximum-pool-size: 5
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/PolarBookshop  
+    
+spring.config.import: "" # When using Config Service, add "optional:configserver:" for ex, in docker environment
 
-  docker:
-    compose:
-      enabled: false
-      file: "../docker-compose.yml"
+spring.cloud.config:
+  enabled: false  # When using Config Service, set to true
+  uri: http://localhost:8888
+  request-connect-timeout: 5000 # 5s time limit for establishing a connection to config server
+  request-read-timeout: 5000    # 5s time limit for read a config data from config server
+  fail-fast: false  # In prod set to true
+  retry: # the retry can enabled only on fail-fast is true 
+    max-attemts: 3
+    initial-interval: 1000 # 1s
+    max-interval: 2000     #2s
+    multiplier: 1.5   
+    
+spring.datasource:
+  url: jdbc:postgresql://localhost:5432/polardb_catalog
+  username: user
+  password: password
+  hikari:
+    connection-timeout: 2000  #2s The maximum time to wait to get a connection from the pool.
+    maximum-pool-size: 5
+    
+spring.security.oauth2:
+  resourceserver:
+    jwt:
+      issuer-uri: http://localhost:8080/realms/PolarBookshop  #http://localhost:8080/realms/PolarBookshop/.well-known/openid-configuration
+      #jwk-set-uri: http://localhost:8080/realms/PolarBookshop/protocol/openid-connect/certs 
 
- 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh, health, flyway, info, heapdump, metrics, env, loggers, mappings, configprops
-  endpoint:
-    health:
-      show-details: always
-      show-components: always
-      probes:
-        enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  tracing:
-    sampling:
-      probability: 1.0  
-  info:
-    env:
+spring.docker.compose:
+  enabled: false
+  file: "../docker-compose.yml"
+
+management.endpoints:
+  web:
+    exposure:
+      include: refresh, health, flyway, info, heapdump, threaddump, metrics, prometheus, env, loggers, mappings, configprops
+      
+management.endpoint:
+  health:
+    show-details: always
+    show-components: always
+    probes:
       enabled: true
-    java:
-      enabled: true
-    os:
-      enabled: true    
+      
+management.metrics:
+  tags:
+    application: ${spring.application.name}
+    
+management.tracing:
+  sampling:
+    probability: 1.0  
+    
+management.info:
+  env:
+    enabled: true
+  java:
+    enabled: true
+  os:
+    enabled: true    
   
 #%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){yellow}
 logging:
   pattern:
     correlation: "%clr([${spring.application.name:},%X{traceId:-},%X{spanId:-}]){yellow} "
   include-application-name: false      
+  
+otel:
+  service.name: catalog-service 
+  resource.attributes: deployment.environment=dev,service.name=catalog-service
+  exporter.otlp.protocol: grpc
+  logs.exporter: otlp
+  traces.exporter: otlp
+  metrics.exporter: otlp
+  instrumentation.micrometer.enabled: true  #Enable Micrometer metrics bridge
+  exporter.otlp.endpoint: http://localhost:4317

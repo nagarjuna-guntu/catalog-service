@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
@@ -15,19 +16,17 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.polarbookshop.catalog_service.config.DataConfig;
+import com.polarbookshop.catalog_service.config.DataAuditConfig;
+import com.polarbookshop.catalog_service.config.MyTestContainers;
 
 
 
 @Testcontainers
 @DataJdbcTest
-@Import(DataConfig.class)
+@Import(DataAuditConfig.class)
+@ImportTestcontainers(MyTestContainers.class)
 class BookRepositoryTest {
 	
-	@Container
-	@ServiceConnection
-	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.1");
-
 	@Autowired
 	private BookRepository bookRepository;
 	

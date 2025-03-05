@@ -3,6 +3,7 @@ package com.polarbookshop.catalog_service.demo;
 import java.util.List;
 import com.polarbookshop.catalog_service.domain.Publisher;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
@@ -12,7 +13,7 @@ import com.polarbookshop.catalog_service.domain.Book;
 import com.polarbookshop.catalog_service.domain.BookRepository;
 
 @Component
-@Profile("testdata")
+@Profile("testdata") // use @ConditionalOnProperty(name = "polar.testdata.enabled", havingValue = "true") instead
 public class BookDataLoader {
 	
 	private final BookRepository bookRepository;

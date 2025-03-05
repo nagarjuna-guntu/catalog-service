@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Configuration
 @EnableJdbcAuditing
-public class DataConfig {
+public class DataAuditConfig {
 	
 	@Bean
 	AuditorAware<String> auditorAware() {

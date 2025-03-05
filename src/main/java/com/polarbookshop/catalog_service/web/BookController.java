@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("books")
+@RequestMapping("/books")
 @Slf4j
 public class BookController {
 	
@@ -35,7 +35,7 @@ public class BookController {
 		return bookService.viewBooks();		
 	}
 	
-	@GetMapping("{isbn}")
+	@GetMapping("/{isbn}")
 	public Book getByIsbn(@PathVariable String isbn) {
 		log.info("Fetching the book with ISBN {} from the catalog", isbn);
 		return bookService.viewBookDetails(isbn);
@@ -48,14 +48,14 @@ public class BookController {
 		return bookService.addBook(book);
 	}
 	
-	@DeleteMapping("{isbn}")
+	@DeleteMapping("/{isbn}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deleteByIsbn(@PathVariable String isbn) {
 		log.info("Deleting a book from the catalog with ISBN {}", isbn);
 		bookService.removeBook(isbn);
 	}
 	
-	@PutMapping("{isbn}")
+	@PutMapping("/{isbn}")
 	public Book update(@PathVariable String isbn, @Valid @RequestBody Book book) {
 		log.info("Updating an exsting book to the catalog with ISBN {}", book.isbn());
 		return bookService.editBookDetails(isbn, book);
